@@ -3,7 +3,9 @@ import {juggler} from '@loopback/repository';
 
 const config = {
   name: 'sqlite',
-  connector: 'sqlite'
+  connector: 'loopback-connector-sqlite3',
+  file: './db/mydatebase.db',
+  debug: true,
 };
 
 // Observe application's life cycle to disconnect the datasource when
@@ -11,7 +13,8 @@ const config = {
 // gracefully. The `stop()` method is inherited from `juggler.DataSource`.
 // Learn more at https://loopback.io/doc/en/lb4/Life-cycle.html
 @lifeCycleObserver('datasource')
-export class SqliteDataSource extends juggler.DataSource
+export class SqliteDataSource
+  extends juggler.DataSource
   implements LifeCycleObserver {
   static dataSourceName = 'sqlite';
   static readonly defaultConfig = config;

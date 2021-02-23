@@ -7,144 +7,145 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
-import {KqClockRepot} from '../models';
-import {KqClockRepotRepository} from '../repositories';
+import {kq_clock_report} from '../models';
+import {KqClockReportRepository} from '../repositories';
 
 export class CrawlerController {
   constructor(
-    @repository(KqClockRepotRepository)
-    public kqClockRepotRepository : KqClockRepotRepository,
+    @repository(KqClockReportRepository)
+    public kqClockReportRepository: KqClockReportRepository,
   ) {}
 
-  @post('/kq-clock-repots')
+  @post('/kq-clock-reports')
   @response(200, {
-    description: 'KqClockRepot model instance',
-    content: {'application/json': {schema: getModelSchemaRef(KqClockRepot)}},
+    description: 'kq_clock_report model instance',
+    content: {'application/json': {schema: getModelSchemaRef(kq_clock_report)}},
   })
   async create(
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(KqClockRepot, {
-            title: 'NewKqClockRepot',
+          schema: getModelSchemaRef(kq_clock_report, {
+            title: 'NewKqClockReport',
             exclude: ['id'],
           }),
         },
       },
     })
-    kqClockRepot: Omit<KqClockRepot, 'id'>,
-  ): Promise<KqClockRepot> {
-    return this.kqClockRepotRepository.create(kqClockRepot);
+    kqClockReport: Omit<kq_clock_report, 'id'>,
+  ): Promise<kq_clock_report> {
+    return this.kqClockReportRepository.create(kqClockReport);
   }
 
-  @get('/kq-clock-repots/count')
+  @get('/kq-clock-reports/count')
   @response(200, {
-    description: 'KqClockRepot model count',
+    description: 'kq_clock_report model count',
     content: {'application/json': {schema: CountSchema}},
   })
   async count(
-    @param.where(KqClockRepot) where?: Where<KqClockRepot>,
+    @param.where(kq_clock_report) where?: Where<kq_clock_report>,
   ): Promise<Count> {
-    return this.kqClockRepotRepository.count(where);
+    return this.kqClockReportRepository.count(where);
   }
 
-  @get('/kq-clock-repots')
+  @get('/kq-clock-reports')
   @response(200, {
-    description: 'Array of KqClockRepot model instances',
+    description: 'Array of kq_clock_report model instances',
     content: {
       'application/json': {
         schema: {
           type: 'array',
-          items: getModelSchemaRef(KqClockRepot, {includeRelations: true}),
+          items: getModelSchemaRef(kq_clock_report, {includeRelations: true}),
         },
       },
     },
   })
   async find(
-    @param.filter(KqClockRepot) filter?: Filter<KqClockRepot>,
-  ): Promise<KqClockRepot[]> {
-    return this.kqClockRepotRepository.find(filter);
+    @param.filter(kq_clock_report) filter?: Filter<kq_clock_report>,
+  ): Promise<kq_clock_report[]> {
+    return this.kqClockReportRepository.find(filter);
   }
 
-  @patch('/kq-clock-repots')
+  @patch('/kq-clock-reports')
   @response(200, {
-    description: 'KqClockRepot PATCH success count',
+    description: 'kq_clock_report PATCH success count',
     content: {'application/json': {schema: CountSchema}},
   })
   async updateAll(
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(KqClockRepot, {partial: true}),
+          schema: getModelSchemaRef(kq_clock_report, {partial: true}),
         },
       },
     })
-    kqClockRepot: KqClockRepot,
-    @param.where(KqClockRepot) where?: Where<KqClockRepot>,
+    kqClockReport: kq_clock_report,
+    @param.where(kq_clock_report) where?: Where<kq_clock_report>,
   ): Promise<Count> {
-    return this.kqClockRepotRepository.updateAll(kqClockRepot, where);
+    return this.kqClockReportRepository.updateAll(kqClockReport, where);
   }
 
-  @get('/kq-clock-repots/{id}')
+  @get('/kq-clock-reports/{id}')
   @response(200, {
-    description: 'KqClockRepot model instance',
+    description: 'kq_clock_report model instance',
     content: {
       'application/json': {
-        schema: getModelSchemaRef(KqClockRepot, {includeRelations: true}),
+        schema: getModelSchemaRef(kq_clock_report, {includeRelations: true}),
       },
     },
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(KqClockRepot, {exclude: 'where'}) filter?: FilterExcludingWhere<KqClockRepot>
-  ): Promise<KqClockRepot> {
-    return this.kqClockRepotRepository.findById(id, filter);
+    @param.filter(kq_clock_report, {exclude: 'where'})
+    filter?: FilterExcludingWhere<kq_clock_report>,
+  ): Promise<kq_clock_report> {
+    return this.kqClockReportRepository.findById(id, filter);
   }
 
-  @patch('/kq-clock-repots/{id}')
+  @patch('/kq-clock-reports/{id}')
   @response(204, {
-    description: 'KqClockRepot PATCH success',
+    description: 'kq_clock_report PATCH success',
   })
   async updateById(
     @param.path.number('id') id: number,
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(KqClockRepot, {partial: true}),
+          schema: getModelSchemaRef(kq_clock_report, {partial: true}),
         },
       },
     })
-    kqClockRepot: KqClockRepot,
+    kqClockReport: kq_clock_report,
   ): Promise<void> {
-    await this.kqClockRepotRepository.updateById(id, kqClockRepot);
+    await this.kqClockReportRepository.updateById(id, kqClockReport);
   }
 
-  @put('/kq-clock-repots/{id}')
+  @put('/kq-clock-reports/{id}')
   @response(204, {
-    description: 'KqClockRepot PUT success',
+    description: 'kq_clock_report PUT success',
   })
   async replaceById(
     @param.path.number('id') id: number,
-    @requestBody() kqClockRepot: KqClockRepot,
+    @requestBody() kqClockReport: kq_clock_report,
   ): Promise<void> {
-    await this.kqClockRepotRepository.replaceById(id, kqClockRepot);
+    await this.kqClockReportRepository.replaceById(id, kqClockReport);
   }
 
-  @del('/kq-clock-repots/{id}')
+  @del('/kq-clock-reports/{id}')
   @response(204, {
-    description: 'KqClockRepot DELETE success',
+    description: 'kq_clock_report DELETE success',
   })
   async deleteById(@param.path.number('id') id: number): Promise<void> {
-    await this.kqClockRepotRepository.deleteById(id);
+    await this.kqClockReportRepository.deleteById(id);
   }
 }
