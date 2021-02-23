@@ -19,6 +19,7 @@ import {
 } from '@loopback/rest';
 import {kq_clock_report} from '../models';
 import {KqClockReportRepository} from '../repositories';
+import {Crawler} from '../services/crawler';
 
 export class CrawlerController {
   constructor(
@@ -73,7 +74,8 @@ export class CrawlerController {
   async find(
     @param.filter(kq_clock_report) filter?: Filter<kq_clock_report>,
   ): Promise<kq_clock_report[]> {
-    return this.kqClockReportRepository.find(filter);
+    await Crawler.openLoginPage();
+    return await this.kqClockReportRepository.find(filter);
   }
 
   @patch('/kq-clock-reports')
