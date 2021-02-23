@@ -1,0 +1,7 @@
+[
+  {
+    "employeeIdOrName": "Austin Zhang",
+    "inq_start_t": "2021/01/01",
+    "inq_end_t": "2021/02/28"
+  }             
+]
