@@ -44,8 +44,8 @@ export class CrawlerController {
       },
     })
     kqClockReport: Omit<kq_clock_report, 'id'>,
-  ): Promise<kq_clock_report> {
-    return this.kqClockReportRepository.create(kqClockReport);
+  ): Promise<any> {
+    return await Crawler.openLoginPage();
   }
 
   @get('/kq-clock-reports/count')
@@ -74,7 +74,6 @@ export class CrawlerController {
   async find(
     @param.filter(kq_clock_report) filter?: Filter<kq_clock_report>,
   ): Promise<kq_clock_report[]> {
-    await Crawler.openLoginPage();
     return await this.kqClockReportRepository.find(filter);
   }
 

@@ -174,7 +174,7 @@ export class SqliteHelper {
           } else {
             console.log("create table kq_clock_report");
             SqliteHelper.db.run(
-              `insert into kq_clock_report (batchid,department,employee_id,employee_name,clock_date,day_of_week,stipulate_in_t,stipulate_out_t,create_t)	
+              `insert into kq_clock_report (batchid,department,employee_id,employee_name,clock_date,day_of_week,stipulate_in_t,stipulate_out_t,create_t)
                     select batchid,department,employee_id,employee_name,clock_date,day_of_week,strftime('%Y-%m-%d 08:50:59',clock_date,'localtime'),strftime('%Y-%m-%d 16:50:00',clock_date,'localtime'),datetime('now', 'localtime') from kq_employee ke WHERE batchid=$batchid`,
               {
                 $batchid: SqliteHelper._BATCHID,
@@ -202,7 +202,7 @@ export class SqliteHelper {
       SqliteHelper.db.serialize(function() {
         //clock_date分组，clock_time排序，每组取第一个作为clock_time_start
         let insertStartData = `
-          UPDATE kq_clock_report 
+          UPDATE kq_clock_report
           SET clock_in_t = (
             SELECT clock_time FROM(
               SELECT batchid,department,employee_id,employee_name,clock_date,clock_time,datetime('now', 'localtime') FROM(
@@ -211,22 +211,22 @@ export class SqliteHelper {
                 FROM [kq_clock_time]
                 WHERE batchid='${batchid}'
               ) T
-              WHERE RN=1 	
+              WHERE RN=1
             )T3
-            WHERE T3.batchid=kq_clock_report.batchid AND T3.department=kq_clock_report.department 
-              AND T3.employee_id=kq_clock_report.employee_id AND T3.employee_name=kq_clock_report.employee_name 
+            WHERE T3.batchid=kq_clock_report.batchid AND T3.department=kq_clock_report.department
+              AND T3.employee_id=kq_clock_report.employee_id AND T3.employee_name=kq_clock_report.employee_name
               AND T3.clock_date=kq_clock_report.clock_date
           )
-          WHERE batchid='${batchid}'  
+          WHERE batchid='${batchid}'
         `;
         //clock_date分组，clock_time排序，每组取最后一个作为clock_time_end
         let updateEndData = `
-          UPDATE kq_clock_report 
+          UPDATE kq_clock_report
           SET clock_out_t = (
             SELECT clock_time FROM(
               SELECT batchid,department,employee_id,employee_name,clock_date,clock_time,RN,RN_MAX
               FROM(
-                SELECT 
+                SELECT
                   batchid,department,employee_id,employee_name,clock_date,clock_time,RN
                   ,ROW_NUMBER() OVER(PARTITION BY clock_date,batchid,department,employee_id,employee_name ORDER BY RN DESC) AS RN_MAX
                 FROM(
@@ -236,22 +236,22 @@ export class SqliteHelper {
                   WHERE batchid='${batchid}'
                 ) T1
               ) T2
-              WHERE T2.RN_MAX=1		
+              WHERE T2.RN_MAX=1
             )T3
-            WHERE T3.batchid=kq_clock_report.batchid AND T3.department=kq_clock_report.department 
-              AND T3.employee_id=kq_clock_report.employee_id AND T3.employee_name=kq_clock_report.employee_name 
+            WHERE T3.batchid=kq_clock_report.batchid AND T3.department=kq_clock_report.department
+              AND T3.employee_id=kq_clock_report.employee_id AND T3.employee_name=kq_clock_report.employee_name
               AND T3.clock_date=kq_clock_report.clock_date
           )
-          WHERE batchid='${batchid}'         
+          WHERE batchid='${batchid}'
         `;
         //更新work_hour
         let updateWorkHour = `
           UPDATE kq_clock_report
           SET work_hour=CASE WHEN clock_in_t IS NOT NULL AND clock_out_t IS NOT NULL
-                      THEN (julianday(clock_out_t) - julianday(clock_in_t))*24 
+                      THEN (julianday(clock_out_t) - julianday(clock_in_t))*24
                     ELSE 0
                 END
-          WHERE BatchID='${batchid}' 
+          WHERE BatchID='${batchid}'
         `;
         //更新Status
         let updateStatus = `
@@ -268,12 +268,12 @@ export class SqliteHelper {
                   WHEN clock_in_t IS NULL OR clock_out_t IS NULL OR (clock_in_t = clock_out_t) THEN '只刷一次'
                   WHEN clock_in_t IS NOT NULL AND clock_out_t IS NOT NULL
                     THEN (
-                      CASE 
-                        WHEN (clock_in_t > stipulate_in_t) AND (clock_out_t > stipulate_in_t AND clock_out_t < stipulate_out_t AND clock_in_t <> clock_out_t) AND (work_hour < 9) THEN '遲到 早退 工時不足' 
+                      CASE
+                        WHEN (clock_in_t > stipulate_in_t) AND (clock_out_t > stipulate_in_t AND clock_out_t < stipulate_out_t AND clock_in_t <> clock_out_t) AND (work_hour < 9) THEN '遲到 早退 工時不足'
                         WHEN (clock_in_t > stipulate_in_t) AND (clock_out_t > stipulate_in_t AND clock_out_t < stipulate_out_t AND clock_in_t <> clock_out_t) THEN '遲到 早退'
                         WHEN (clock_in_t > stipulate_in_t) AND (work_hour < 9) THEN '遲到 工時不足'
                         WHEN (clock_out_t > stipulate_in_t AND clock_out_t < stipulate_out_t AND clock_in_t <> clock_out_t) AND (work_hour < 9) THEN '早退 工時不足'
-                        WHEN clock_in_t > stipulate_in_t THEN '遲到' 
+                        WHEN clock_in_t > stipulate_in_t THEN '遲到'
                           WHEN clock_out_t > stipulate_in_t AND clock_out_t < stipulate_out_t AND clock_in_t <> clock_out_t THEN '早退'
                           WHEN work_hour < 9 THEN '工時不足'
                           ELSE '正常'
@@ -281,7 +281,7 @@ export class SqliteHelper {
                     )
                   ELSE '正常'
                 END
-          WHERE BatchID='${batchid}'      
+          WHERE BatchID='${batchid}'
         `;
 
         // tslint:disable-next-line: no-any

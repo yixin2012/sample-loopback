@@ -8,6 +8,17 @@ const config = {
   debug: true,
 };
 
+// const config = {
+//   name: 'MariaDB',
+//   connector: 'mysql',
+//   url: '',
+//   host: 'localhost',
+//   port: 3306,
+//   user: 'root',
+//   password: '123',
+//   database: 'test',
+// };
+
 // Observe application's life cycle to disconnect the datasource when
 // application is stopped. This allows the application to be shut down
 // gracefully. The `stop()` method is inherited from `juggler.DataSource`.
